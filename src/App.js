@@ -2,6 +2,7 @@ import React from "react";
 
 import "./App.css";
 
+
 // component classes are useful because they offer more control in the form of lifecycle hooks
 class App extends React.Component {
   constructor(props) {
@@ -9,11 +10,14 @@ class App extends React.Component {
     this.state = {
       searchValue: "",
       imageSource: "",
+      loading: false,
     };
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
+    this.setState({ loading: true })
+
     const baseUrl = "https://pokeapi.co/api/v2/";
     fetch(`${baseUrl}pokemon/${this.state.searchValue}`)
       .then((res) => res.json())
@@ -24,7 +28,9 @@ class App extends React.Component {
           imageSource: imageData,
         });
         console.log(imageData);
-      });
+      })
+      .catch(err => console.log(err))
+      .finally(() => this.setState({ loading: false }));
   };
 
   handleTextUpdate = (event) => {
@@ -33,7 +39,19 @@ class App extends React.Component {
     });
   };
 
+  clear = () => {
+    this.setState({
+      imageSource:""
+    })
+  }
+
   render() {
+    const { searchValue, imageSource, loading } = this.state;
+
+    if (loading) {
+      return <p>loading...</p>
+    }
+
     return (
       <>
         <h3>Search for a Pokemon:</h3>
@@ -41,12 +59,14 @@ class App extends React.Component {
           <input
             placeholder="eg bulbasaur"
             type="text"
-            value={this.state.searchValue}
+            value={searchValue}
             onChange={this.handleTextUpdate}
           />
           <button type="submit">Get Pokemon</button>
         </form>
-        <img src={this.state.imageSource} alt="a pokemon" />
+        <br />
+        <button onClick={this.clear}>Clear</button>
+        {imageSource && <img src={imageSource} alt="a pokemon" />}
       </>
     );
   }
