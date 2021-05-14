@@ -7,57 +7,42 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      timesClicked: 0
+      searchValue: "",
     };
-    /* 
-      this line is needed in order to declare regular functions in class 
-      components, otherwise use arrow functions
-    */
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  componentDidMount() {
-    console.log('component mounted');
-    const baseUrl = "https://pokeapi.co/api/v2/"
-    fetch(`${baseUrl}pokemon/bulbasaur`)
-      .then(res => res.json())
-      .then(data => console.log(data))
-  }
-
-  componentDidUpdate() {
-    console.log('the component updated!');
-  }
-
-  componentWillUnmount() {
-    console.log('component unmounted');
-  }
-
-  shouldComponentUpdate() {
-    if (this.state.timesClicked % 2 === 0) {
-      return false;
-    } else {
-      return true;
-    }
   }
 
   /* 
     in a regular function the 'this' keyword refers to the function itself,
     but in an arrow function it refers to the class
   */
-  // handleClick = () =>
-  handleClick() {
+  // handleSubmit = () =>
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const baseUrl = "https://pokeapi.co/api/v2/";
+    fetch(`${baseUrl}pokemon/${this.state.searchValue}`)
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }
+
+  handleTextUpdate = (event) => {
     this.setState({
-      timesClicked: this.state.timesClicked + 1
-    });
-    console.log(this.state.timesClicked);
-  };
+      searchValue: event.target.value
+    })
+  }
 
   render() {
     return (
       <>
-        <h3>Times clicked: {this.state.timesClicked}</h3>
-        <input type="text" />
-        <button onClick={this.handleClick}>Click me!</button>
+        <h3>Search for a Pokemon:</h3>
+        <form onSubmit={this.handleSubmit}>  
+          <input
+            placeholder="eg bulbasaur"
+            type="text"
+            value={this.state.searchValue}
+            onChange={this.handleTextUpdate}
+          />
+          <button type="submit">Get Pokemon</button>
+        </form>
       </>
     );
   }
