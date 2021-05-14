@@ -8,33 +8,36 @@ class App extends React.Component {
     super(props);
     this.state = {
       searchValue: "",
+      imageSource: "",
     };
   }
 
-  /* 
-    in a regular function the 'this' keyword refers to the function itself,
-    but in an arrow function it refers to the class
-  */
-  // handleSubmit = () =>
   handleSubmit = (event) => {
     event.preventDefault();
     const baseUrl = "https://pokeapi.co/api/v2/";
     fetch(`${baseUrl}pokemon/${this.state.searchValue}`)
       .then((res) => res.json())
-      .then((data) => console.log(data));
-  }
+      .then((data) => {
+        console.log(data);
+        const imageData = data.sprites.other["official-artwork"].front_default;
+        this.setState({
+          imageSource: imageData,
+        });
+        console.log(imageData);
+      });
+  };
 
   handleTextUpdate = (event) => {
     this.setState({
-      searchValue: event.target.value
-    })
-  }
+      searchValue: event.target.value,
+    });
+  };
 
   render() {
     return (
       <>
         <h3>Search for a Pokemon:</h3>
-        <form onSubmit={this.handleSubmit}>  
+        <form onSubmit={this.handleSubmit}>
           <input
             placeholder="eg bulbasaur"
             type="text"
@@ -43,6 +46,7 @@ class App extends React.Component {
           />
           <button type="submit">Get Pokemon</button>
         </form>
+        <img src={this.state.imageSource} alt="a pokemon" />
       </>
     );
   }
