@@ -18,6 +18,10 @@ class App extends React.Component {
 
   componentDidMount() {
     console.log('component mounted');
+    const baseUrl = "https://pokeapi.co/api/v2/"
+    fetch(`${baseUrl}pokemon/bulbasaur`)
+      .then(res => res.json())
+      .then(data => console.log(data))
   }
 
   componentDidUpdate() {
@@ -52,6 +56,7 @@ class App extends React.Component {
     return (
       <>
         <h3>Times clicked: {this.state.timesClicked}</h3>
+        <input type="text" />
         <button onClick={this.handleClick}>Click me!</button>
       </>
     );
